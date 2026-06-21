@@ -1,0 +1,14 @@
+
+ktor:
+  deployment:
+    port: 8010
+    sslPort: 9010
+  security:
+    ssl:
+      keyStore: keystore.jks
+      keyAlias: mykeyalias
+      keyStorePassword: mypassword
+      privateKeyPassword: mypassword
+  application:
+    modules:
+      - org.burgas.serialization.SerializationKt.configureSerialization

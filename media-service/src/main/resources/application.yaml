@@ -1,3 +1,43 @@
+
+server:
+  port: 9000
+  ssl:
+    enabled: true
+    key-store: ${CERTIFICATE_PATH:media-service/certificate/keystore.p12}
+    key-store-password: 'changeit'
+    key-store-type: 'PKCS12'
+    key-alias: 'myapp'
 spring:
   application:
     name: media-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5000/media-service-db}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    hikari:
+      pool-name: MyHikariCP-Pool
+      maximum-pool-size: 50
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-timeout: 5000
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        highlight_sql: true
+
+logging:
+  level:
+    org.springframework.transaction.interceptor: TRACE
+    org.springframework.orm.jpa: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

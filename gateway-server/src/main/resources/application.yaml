@@ -10,3 +10,15 @@ server:
 spring:
   application:
     name: gateway-server
+  cloud:
+    gateway:
+      server:
+        webflux:
+          httpclient:
+            ssl:
+              use-insecure-trust-manager: true
+          routes:
+            - id: media-service
+              uri: ${MEDIA_SERVICE_URI:https://localhost:9000}
+              predicates:
+                - Path=/api/v1/**

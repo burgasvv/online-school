@@ -7,18 +7,24 @@ import org.burgas.mediaservice.mapper.Mapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
+
 @Component
 public class DocumentMapper implements Mapper<Document, DocumentResponse> {
 
     @SneakyThrows
     @Override
     public Document toDao(MultipartFile multipartFile) {
-        return Document.builder()
-                .name(multipartFile.getOriginalFilename())
-                .contentType(multipartFile.getContentType())
-                .size(multipartFile.getSize())
-                .data(multipartFile.getBytes())
-                .build();
+        if (Objects.requireNonNull(multipartFile.getContentType()).startsWith("application")) {
+            return Document.builder()
+                    .name(multipartFile.getOriginalFilename())
+                    .contentType(multipartFile.getContentType())
+                    .size(multipartFile.getSize())
+                    .data(multipartFile.getBytes())
+                    .build();
+        } else {
+            throw new IllegalArgumentException("Part file is not application content type");
+        }
     }
 
     @Override

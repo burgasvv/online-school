@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -40,11 +41,12 @@ public class  ImageController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ImageResponse> uploadImage(@RequestPart MultipartFile image) {
+    public ResponseEntity<Void> uploadImage(@RequestPart MultipartFile image) {
+        ImageResponse imageResponse = imageService.upload(image);
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(imageService.upload(image));
+                .status(HttpStatus.FOUND)
+                .location(URI.create("/api/v1/images/by-id?imageId=" + imageResponse.getId()))
+                .build();
     }
 
     @DeleteMapping("/remove")

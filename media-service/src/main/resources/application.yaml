@@ -36,8 +36,9 @@ spring:
         highlight_sql: true
   servlet:
     multipart:
-      max-request-size: 10000MB
-      max-file-size: 10000MB
+      max-request-size: 100000MB
+      max-file-size: 100000MB
+      resolve-lazily: true
 
 logging:
   level:

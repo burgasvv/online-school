@@ -21,4 +21,9 @@ spring:
             - id: media-service
               uri: ${MEDIA_SERVICE_URI:https://localhost:9000}
               predicates:
-                - Path=/api/v1/**
+                - Path=/api/v1/images/**,/api/v1/files/**
+
+            - id: identity-service
+              uri: ${IDENTITY_SERVICE_URI:https://localhost:9010}
+              predicates:
+                - Path=/api/v1/security/**

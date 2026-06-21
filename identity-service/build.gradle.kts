@@ -22,6 +22,10 @@ dependencies {
     implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.netty)
     implementation(libs.logback.classic)
+    implementation("io.ktor:ktor-server-status-pages:3.5.0")
+    implementation("io.ktor:ktor-server-sessions:3.5.0")
+    implementation("io.ktor:ktor-server-cors:3.5.0")
+    implementation("io.ktor:ktor-server-csrf:3.5.0")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)

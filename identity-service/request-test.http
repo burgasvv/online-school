@@ -1,0 +1,10 @@
+
+
+
+### Security Requests
+
+
+
+###
+GET https://localhost:8000/api/v1/security/csrf-token
+Accept: application/json

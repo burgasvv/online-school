@@ -1,14 +1,8 @@
 package org.burgas.dao
 
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import org.burgas.client.RestClient
 import org.burgas.database.IdentityDocumentTable
 import org.burgas.database.IdentityTable
@@ -97,9 +91,7 @@ class IdentityEntity(id: EntityID<UUID>) : UUIDEntity(id), Dao,
     override suspend fun toResponse(): IdentityResponse {
         val image = httpClient.get("http://localhost:9000/api/v1/images/by-id") {
             parameter("imageId", imageId ?: UUID(0,0))
-            header(HttpHeaders.Host, "localhost:9000")
             header(HttpHeaders.Accept, ContentType.Application.Json)
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
         }.body<ImageResponse?>()
 
         val documentIds = IdentityDocumentTable.select(IdentityDocumentTable.documentId)
@@ -108,7 +100,6 @@ class IdentityEntity(id: EntityID<UUID>) : UUIDEntity(id), Dao,
             .toSet()
         val documentRequest = DocumentRequest(documentIds = documentIds)
         val documents = httpClient.get("http://localhost:9000/api/v1/documents/by-ids") {
-            header(HttpHeaders.Host, "localhost:9000")
             header(HttpHeaders.Accept, ContentType.Application.Json)
             header(HttpHeaders.ContentType, ContentType.Application.Json)
             setBody(documentRequest)

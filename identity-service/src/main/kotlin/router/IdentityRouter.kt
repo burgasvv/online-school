@@ -49,6 +49,31 @@ fun Application.configureIdentityRouter() {
                     identityService.delete(identityId)
                     call.respond(HttpStatusCode.OK)
                 }
+
+                post("/upload-image") {
+                    val identityId = UUID.fromString(call.parameters["identityId"])
+                    identityService.uploadImage(identityId, call.receiveMultipart(Long.MAX_VALUE))
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                delete("/remove-image") {
+                    val identityId = UUID.fromString(call.parameters["identityId"])
+                    identityService.removeImage(identityId)
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                post("/upload-document") {
+                    val identityId = UUID.fromString(call.parameters["identityId"])
+                    identityService.uploadDocument(identityId, call.receiveMultipart(Long.MAX_VALUE))
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                delete("/remove-document") {
+                    val identityId = UUID.fromString(call.parameters["identityId"])
+                    val documentId = UUID.fromString(call.parameters["documentId"])
+                    identityService.removeDocument(identityId, documentId)
+                    call.respond(HttpStatusCode.OK)
+                }
             }
         }
     }

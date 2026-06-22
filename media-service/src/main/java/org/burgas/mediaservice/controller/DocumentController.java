@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,15 +50,15 @@ public class DocumentController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Void> uploadDocument(@RequestPart MultipartFile document) {
+    public ResponseEntity<DocumentResponse> uploadDocument(@RequestPart MultipartFile document) {
         DocumentResponse documentResponse = documentService.upload(document);
         return ResponseEntity
-                .status(HttpStatus.FOUND)
-                .location(URI.create("/api/v1/documents/by-id?documentId=" + documentResponse.getId()))
-                .build();
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(documentResponse);
     }
 
-    @DeleteMapping("/remove")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> removeDocument(@RequestParam UUID documentId) {
         documentService.remove(documentId);
         return ResponseEntity.noContent().build();

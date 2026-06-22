@@ -41,12 +41,12 @@ public class  ImageController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Void> uploadImage(@RequestPart MultipartFile image) {
+    public ResponseEntity<ImageResponse> uploadImage(@RequestPart MultipartFile image) {
         ImageResponse imageResponse = imageService.upload(image);
         return ResponseEntity
-                .status(HttpStatus.FOUND)
-                .location(URI.create("/api/v1/images/by-id?imageId=" + imageResponse.getId()))
-                .build();
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(imageResponse);
     }
 
     @DeleteMapping("/remove")

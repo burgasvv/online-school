@@ -1,16 +1,19 @@
 
 ktor:
   deployment:
-    port: 8010
-    sslPort: 9010
-  security:
-    ssl:
-      keyStore: $CERTIFICATE_PATH:identity-service/certificate/keystore.jks
-      keyAlias: mykeyalias
-      keyStorePassword: mypassword
-      privateKeyPassword: mypassword
+    port: 9010
+  postgres:
+    driver: 'org.postgresql.Driver'
+    url: '$POSTGRES_URL:jdbc:postgresql://localhost:5010/identity-service-db'
+    username: '$POSTGRES_USERNAME:postgres'
+    password: '$POSTGRES_PASSWORD:postgres'
+  redis:
+    host: '$REDIS_HOST:localhost'
+    port: 6010
   application:
     modules:
       - org.burgas.serialization.SerializationKt.configureSerialization
       - org.burgas.security.SecurityKt.configureSecurity
+      - org.burgas.database.DatabaseKt.configureDatabase
+      - org.burgas.router.IdentityRouterKt.configureIdentityRouter
       - org.burgas.router.SecurityRouterKt.configureSecurityRouter

@@ -6,5 +6,60 @@
 
 
 ###
-GET https://localhost:8000/api/v1/security/csrf-token
+GET /api/v1/security/csrf-token
+Host: localhost:8000
+Accept: application/json
+
+###
+GET /api/v1/security/login
+Host: localhost:8000
+Accept: text/plain
+Authorization: Basic burgasvv@gmail.com burgasvv
+
+###
+GET /api/v1/security/logout
+Host: localhost:8000
+Accept: text/plain
+
+
+
+### Identity Requests
+
+
+
+###
+POST /api/v1/identities/create
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+Origin: http://localhost:8000
+X-Csrf-Token: a0b25ec4-4e52-4fc1-9da0-ebbbb9d948b0
+
+{
+    "authority": "ADMIN",
+    "email": "burgasvv@gmail.com",
+    "password": "burgasvv",
+    "status": true,
+    "firstname": "Бургас",
+    "lastname": "Вячеслав",
+    "patronymic": "Васильевич",
+    "about": "Личная информация об аккаунте"
+}
+
+###
+PUT /api/v1/identities/update
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+Origin: http://localhost:8000
+X-Csrf-Token: a0b25ec4-4e52-4fc1-9da0-ebbbb9d948b0
+
+{
+    "id": "7ea86e4d-1ac1-46b7-a7e6-1df526748b15",
+    "about": "Личная информация о пользователе Бургасе Вячеславе Васильевиче"
+}
+
+###
+GET /api/v1/identities/by-id?identityId=7ea86e4d-1ac1-46b7-a7e6-1df526748b15
+Host: localhost:8000
 Accept: application/json

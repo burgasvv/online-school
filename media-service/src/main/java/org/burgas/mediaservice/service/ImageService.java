@@ -26,12 +26,17 @@ public class ImageService implements FindService<UUID, Image, ImageResponse>, Up
 
     @Override
     public Image findEntity(UUID uuid) {
-        return imageRepository.findById(uuid).orElseThrow(() -> new IllegalArgumentException("Image not found"));
+        return imageRepository.findById(uuid).orElse(null);
     }
 
     @Override
     public ImageResponse findById(UUID uuid) {
-        return imageMapper.toResponse(findEntity(uuid));
+        Image image = findEntity(uuid);
+        if (image != null) {
+            return imageMapper.toResponse(image);
+        } else {
+            return null;
+        }
     }
 
     @Override

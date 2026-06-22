@@ -1,0 +1,28 @@
+
+services:
+
+  postgres:
+    container_name: identity-service-postgres
+    image: postgres:latest
+    restart: unless-stopped
+    ports:
+      - "5010:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: identity-service-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    container_name: identity-service-redis
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6010:6379"
+    volumes:
+      - redis-data:/var/lib/redis/data
+
+volumes:
+  postgres-data:
+  redis-data:

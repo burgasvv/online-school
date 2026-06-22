@@ -2,11 +2,16 @@ package org.burgas.router
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
+import io.ktor.server.auth.UserPasswordCredential
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import org.burgas.dto.AuthToken
 import org.burgas.dto.CsrfToken
 import java.util.UUID
 
@@ -24,6 +29,28 @@ fun Application.configureSecurityRouter() {
                     val csrfToken = CsrfToken(token = UUID.randomUUID())
                     call.sessions.set(csrfToken, CsrfToken::class)
                     call.respond(HttpStatusCode.OK, csrfToken)
+                }
+            }
+
+            authenticate("basic-auth-all") {
+
+                get("/login") {
+                    val authToken = call.sessions.get(AuthToken::class)
+                    if (authToken != null) {
+                        call.respond(HttpStatusCode.OK, "You are already logged in")
+                    } else {
+                        val principal = call.principal<UserPasswordCredential>()!!
+                        call.sessions.set(AuthToken(principal.name), AuthToken::class)
+                        call.respond(HttpStatusCode.OK, "You successfully logged in")
+                    }
+                }
+            }
+
+            authenticate("basic-auth-session") {
+
+                get("/logout") {
+                    call.sessions.clear(AuthToken::class)
+                    call.respond(HttpStatusCode.OK, "You successfully logged out")
                 }
             }
         }

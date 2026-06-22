@@ -2,6 +2,7 @@ package org.burgas.mediaservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.burgas.mediaservice.dao.document.Document;
+import org.burgas.mediaservice.dto.document.DocumentRequest;
 import org.burgas.mediaservice.dto.document.DocumentResponse;
 import org.burgas.mediaservice.service.DocumentService;
 import org.springframework.core.io.InputStreamResource;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +40,14 @@ public class DocumentController {
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(documentService.findById(documentId));
+    }
+
+    @GetMapping("/by-ids")
+    public ResponseEntity<Set<DocumentResponse>> getDocumentsByIds(@RequestBody DocumentRequest documentRequest) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(documentService.findByIds(documentRequest.getDocumentIds()));
     }
 
     @PostMapping("/upload")

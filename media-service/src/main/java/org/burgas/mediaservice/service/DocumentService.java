@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,13 @@ public class DocumentService implements FindService<UUID, Document, DocumentResp
     public DocumentResponse findById(UUID uuid) {
         Document document = findEntity(uuid);
         return documentMapper.toResponse(document);
+    }
+
+    public Set<DocumentResponse> findByIds(final Set<UUID> documentIds) {
+        return documentRepository.findAllById(documentIds)
+                .parallelStream()
+                .map(documentMapper::toResponse)
+                .collect(Collectors.toSet());
     }
 
     @Override

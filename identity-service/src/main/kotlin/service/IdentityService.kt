@@ -24,6 +24,7 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.mindrot.jbcrypt.BCrypt
 import java.sql.Connection
 import java.util.*
 
@@ -144,6 +145,30 @@ class IdentityService : CacheHandler<IdentityResponse>, CollectService<IdentityR
             handleCache(identityEntity.toResponse())
         } else {
             throw IllegalArgumentException("Identity and document connection not found")
+        }
+    }
+
+    suspend fun changePassword(identityRequest: IdentityRequest) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        val identityEntity = findEntity(identityRequest.id!!)
+        if (!BCrypt.checkpw(identityRequest.password!!, identityEntity.password)) {
+            identityEntity.password = BCrypt.hashpw(identityRequest.password, BCrypt.gensalt())
+            handleCache(identityEntity.toResponse())
+        } else {
+            throw IllegalArgumentException("Passwords matched")
+        }
+    }
+
+    suspend fun changeStatus(identityRequest: IdentityRequest) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        val identityEntity = findEntity(identityRequest.id!!)
+        if (identityRequest.status!! != identityEntity.status) {
+            identityEntity.status = identityRequest.status
+            handleCache(identityEntity.toResponse())
+        } else {
+            throw IllegalArgumentException("Statuses matched")
         }
     }
 }

@@ -29,6 +29,12 @@ fun Application.configureIdentityRouter() {
                 get {
                     call.respond(HttpStatusCode.OK, identityService.findAll())
                 }
+
+                put("/change-status") {
+                    val identityRequest = call.receive(IdentityRequest::class)
+                    identityService.changeStatus(identityRequest)
+                    call.respond(HttpStatusCode.OK)
+                }
             }
 
             authenticate("basic-auth-session") {
@@ -72,6 +78,12 @@ fun Application.configureIdentityRouter() {
                     val identityId = UUID.fromString(call.parameters["identityId"])
                     val documentId = UUID.fromString(call.parameters["documentId"])
                     identityService.removeDocument(identityId, documentId)
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                put("/change-password") {
+                    val identityRequest = call.receive(IdentityRequest::class)
+                    identityService.changePassword(identityRequest)
                     call.respond(HttpStatusCode.OK)
                 }
             }

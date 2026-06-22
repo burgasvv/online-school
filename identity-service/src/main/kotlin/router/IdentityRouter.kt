@@ -6,13 +6,59 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
+import io.ktor.util.AttributeKey
+import org.burgas.dao.IdentityEntity
+import org.burgas.database.DatabaseConnection
+import org.burgas.dto.AuthToken
 import org.burgas.dto.IdentityRequest
 import org.burgas.service.IdentityService
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import java.util.*
 
 fun Application.configureIdentityRouter() {
 
     val identityService = IdentityService()
+    val paramUrls: List<String> = listOf(
+        "/api/v1/identities/by-id", "/api/v1/identities/delete", "/api/v1/identities/upload-image",
+        "/api/v1/identities/remove-image", "/api/v1/identities/upload-document", "/api/v1/identities/remove-document"
+    )
+    val bodyUrls: List<String> = listOf("/api/v1/identities/update", "/api/v1/identities/change-password")
+
+    intercept(ApplicationCallPipeline.Plugins) {
+
+        if (paramUrls.contains(call.request.path())) {
+            val authToken = call.sessions.get(AuthToken::class)!!
+            val identityId = UUID.fromString(call.parameters["identityId"])
+
+            val identityEntity = suspendTransaction(db = DatabaseConnection.postgres, readOnly = true) {
+                IdentityEntity.findById(identityId)!!
+            }
+            if (identityEntity.email == authToken.token) {
+                proceed()
+            } else {
+                throw IllegalArgumentException("Not authorized")
+            }
+
+        } else if (bodyUrls.contains(call.request.path())) {
+            val authToken = call.sessions.get(AuthToken::class)!!
+            val identityRequest = call.receive(IdentityRequest::class)
+
+            val identityEntity = suspendTransaction(db = DatabaseConnection.postgres, readOnly = true) {
+                IdentityEntity.findById(identityRequest.id!!)!!
+            }
+            if (identityEntity.email == authToken.token) {
+                call.attributes[AttributeKey<IdentityRequest>("identityRequest")] = identityRequest
+                proceed()
+            } else {
+                throw IllegalArgumentException("Not authorized")
+            }
+
+        } else {
+            proceed()
+        }
+    }
 
     routing {
 
@@ -45,7 +91,7 @@ fun Application.configureIdentityRouter() {
                 }
 
                 put("/update") {
-                    val identityRequest = call.receive(IdentityRequest::class)
+                    val identityRequest = call.attributes[AttributeKey<IdentityRequest>("identityRequest")]
                     identityService.update(identityRequest)
                     call.respond(HttpStatusCode.OK)
                 }
@@ -82,7 +128,7 @@ fun Application.configureIdentityRouter() {
                 }
 
                 put("/change-password") {
-                    val identityRequest = call.receive(IdentityRequest::class)
+                    val identityRequest = call.attributes[AttributeKey<IdentityRequest>("identityRequest")]
                     identityService.changePassword(identityRequest)
                     call.respond(HttpStatusCode.OK)
                 }

@@ -1,0 +1,28 @@
+
+services:
+
+  postgres:
+    container_name: course-service-postgres
+    image: postgres:latest
+    restart: unless-stopped
+    ports:
+      - "5020:5432"
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: course-service-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    container_name: course-service-redis
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6020:6379"
+    volumes:
+      - redis-data:/var/lib/redis/data
+
+volumes:
+  postgres-data:
+  redis-data:

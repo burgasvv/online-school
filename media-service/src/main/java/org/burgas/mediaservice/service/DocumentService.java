@@ -29,13 +29,13 @@ public class DocumentService implements FindService<UUID, Document, DocumentResp
 
     @Override
     public Document findEntity(UUID uuid) {
-        return documentRepository.findById(uuid).orElseThrow(() -> new IllegalArgumentException("Document not found"));
+        return documentRepository.findById(uuid).orElse(null);
     }
 
     @Override
     public DocumentResponse findById(UUID uuid) {
         Document document = findEntity(uuid);
-        return documentMapper.toResponse(document);
+        return document != null ? documentMapper.toResponse(document) : null;
     }
 
     public Set<DocumentResponse> findByIds(final Set<UUID> documentIds) {

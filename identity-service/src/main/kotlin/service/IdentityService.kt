@@ -11,7 +11,9 @@ import org.burgas.client.RestClient
 import org.burgas.dao.IdentityEntity
 import org.burgas.database.DatabaseConnection
 import org.burgas.database.IdentityDocumentTable
+import org.burgas.database.IdentityTable
 import org.burgas.dto.DocumentResponse
+import org.burgas.dto.IdentityDependency
 import org.burgas.dto.IdentityRequest
 import org.burgas.dto.IdentityResponse
 import org.burgas.dto.ImageResponse
@@ -20,6 +22,7 @@ import org.burgas.redis.RedisKeys
 import org.burgas.service.contract.*
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -44,6 +47,12 @@ class IdentityService : CacheHandler<IdentityResponse>, CollectService<IdentityR
         db = DatabaseConnection.postgres, readOnly = true
     ) {
         IdentityEntity.all().map { it.toResponse() }.toSet()
+    }
+
+    suspend fun findDependenciesByIds(identityIds: List<UUID>): Set<IdentityDependency> = suspendTransaction(
+        db = DatabaseConnection.postgres, readOnly = true
+    ) {
+        IdentityEntity.find { IdentityTable.id inList identityIds }.map { it.toDependency() }.toSet()
     }
 
     override suspend fun findEntity(id: UUID): IdentityEntity = suspendTransaction(

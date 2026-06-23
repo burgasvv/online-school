@@ -3,7 +3,7 @@ package org.burgas.dto
 import kotlinx.serialization.Serializable
 import org.burgas.database.Authority
 import org.burgas.serialization.UUIDSerializer
-import java.util.UUID
+import java.util.*
 
 interface Request
 
@@ -50,6 +50,11 @@ data class DocumentResponse(
     val contentType: String? = null,
     val size: Long? = null
 ) : Response
+
+@Serializable
+data class IdentityList(
+    val identityIds: List<@Serializable(with = UUIDSerializer::class) UUID>
+) : Request
 
 @Serializable
 data class IdentityRequest(

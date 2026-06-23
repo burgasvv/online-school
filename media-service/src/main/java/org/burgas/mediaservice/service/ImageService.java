@@ -32,11 +32,7 @@ public class ImageService implements FindService<UUID, Image, ImageResponse>, Up
     @Override
     public ImageResponse findById(UUID uuid) {
         Image image = findEntity(uuid);
-        if (image != null) {
-            return imageMapper.toResponse(image);
-        } else {
-            return null;
-        }
+        return image != null ? imageMapper.toResponse(image) : null;
     }
 
     @Override

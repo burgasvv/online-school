@@ -12,6 +12,7 @@ import io.ktor.util.AttributeKey
 import org.burgas.dao.IdentityEntity
 import org.burgas.database.DatabaseConnection
 import org.burgas.dto.AuthToken
+import org.burgas.dto.IdentityList
 import org.burgas.dto.IdentityRequest
 import org.burgas.service.IdentityService
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -68,6 +69,11 @@ fun Application.configureIdentityRouter() {
                 val identityRequest = call.receive(IdentityRequest::class)
                 identityService.create(identityRequest)
                 call.respond(HttpStatusCode.OK)
+            }
+
+            post("/dependencies/by-ids") {
+                val identityList = call.receive(IdentityList::class)
+                call.respond(HttpStatusCode.OK, identityService.findDependenciesByIds(identityList.identityIds))
             }
 
             authenticate("basic-auth-admin") {

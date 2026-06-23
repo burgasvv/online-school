@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
 import jakarta.persistence.Table
 import org.burgas.courseservice.dao.Dao
 import org.burgas.courseservice.dao.course.Course
@@ -16,6 +18,12 @@ import java.util.UUID
 
 @Entity
 @Table(name = "project", schema = "public")
+@NamedEntityGraph(
+    name = "project-entity-graph",
+    attributeNodes = [
+        NamedAttributeNode(value = "course")
+    ]
+)
 class Project : Dao {
 
     @Id

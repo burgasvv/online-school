@@ -1,0 +1,33 @@
+
+
+
+### Course Requests
+
+
+
+###
+POST /api/v1/courses/create
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Java Course",
+    "description": "Описание курса Java Course"
+}
+
+###
+PUT /api/v1/courses/update
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "id": "36ee5204-1320-4005-acd1-df2b8e3bedb9",
+    "description": "Описание нового курса Java Course"
+}
+
+###
+GET /api/v1/courses/by-id?courseId=36ee5204-1320-4005-acd1-df2b8e3bedb9
+Host: localhost:8000
+Accept: application/json

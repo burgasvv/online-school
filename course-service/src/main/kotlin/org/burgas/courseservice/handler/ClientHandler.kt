@@ -3,6 +3,8 @@ package org.burgas.courseservice.handler
 import org.burgas.courseservice.dto.document.DocumentResponse
 import org.burgas.courseservice.dto.identity.IdentityDependency
 import org.burgas.courseservice.dto.identity.IdentityList
+import org.burgas.courseservice.dto.token.CsrfToken
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
@@ -19,9 +21,18 @@ class ClientHandler {
         this.restClient = restClient
     }
 
+    fun getIdentityServiceCsrfToken(): CsrfToken {
+        return restClient.get()
+            .uri("http://localhost:9010/api/v1/security/csrf-token")
+            .retrieve()
+            .requiredBody<CsrfToken>()
+    }
+
     fun getIdentityDependenciesByIds(identityIds: List<UUID>): Set<IdentityDependency> {
         return restClient.post()
             .uri("http://localhost:9010/api/v1/identities/dependencies/by-ids")
+            .header(HttpHeaders.ORIGIN, "http://localhost:8000")
+            .header("X-CSRF-Token", getIdentityServiceCsrfToken().token.toString())
             .contentType(MediaType.APPLICATION_JSON)
             .body(IdentityList(identityIds = identityIds))
             .retrieve()
@@ -38,6 +49,8 @@ class ClientHandler {
     fun handleIdentityCache(identityId: UUID) {
         restClient.put()
             .uri("http://localhost:9010/api/v1/identities/dependency-cache?identityId=$identityId")
+            .header(HttpHeaders.ORIGIN, "http://localhost:8000")
+            .header("X-CSRF-Token", getIdentityServiceCsrfToken().token.toString())
             .retrieve()
             .toBodilessEntity()
     }

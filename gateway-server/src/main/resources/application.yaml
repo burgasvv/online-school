@@ -18,3 +18,8 @@ spring:
               uri: ${IDENTITY_SERVICE_URI:http://localhost:9010}
               predicates:
                 - Path=/api/v1/security/**,/api/v1/identities/**
+
+            - id: course-service
+              uri: ${COURSE_SERVICE_URI:http://localhost:9020}
+              predicates:
+                - Path=/api/v1/courses/**,/api/v1/projects/**

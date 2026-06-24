@@ -15,7 +15,7 @@ interface Response
 data class ExceptionResponse(
     val status: String,
     val code: Int,
-    val message: String
+    val message: String?
 ) : Response
 
 @Serializable
@@ -25,7 +25,7 @@ data class CsrfToken(
 ) : Response
 
 @Serializable
-data class AuthToken(val token: String)
+data class AuthToken(val token: String, val authority: Authority)
 
 @Serializable
 data class ImageResponse(

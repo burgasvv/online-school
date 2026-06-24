@@ -11,8 +11,13 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import org.burgas.dao.IdentityEntity
+import org.burgas.database.DatabaseConnection
+import org.burgas.database.IdentityTable
 import org.burgas.dto.AuthToken
 import org.burgas.dto.CsrfToken
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import java.util.UUID
 
 fun Application.configureSecurityRouter() {
@@ -40,7 +45,10 @@ fun Application.configureSecurityRouter() {
                         call.respond(HttpStatusCode.OK, "You are already logged in")
                     } else {
                         val principal = call.principal<UserPasswordCredential>()!!
-                        call.sessions.set(AuthToken(principal.name), AuthToken::class)
+                        val identityEntity = suspendTransaction(db = DatabaseConnection.postgres, readOnly = true) {
+                            IdentityEntity.find { IdentityTable.email eq principal.name }.single()
+                        }
+                        call.sessions.set(AuthToken(identityEntity.email, identityEntity.authority), AuthToken::class)
                         call.respond(HttpStatusCode.OK, "You successfully logged in")
                     }
                 }

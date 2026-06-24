@@ -76,6 +76,12 @@ fun Application.configureIdentityRouter() {
                 call.respond(HttpStatusCode.OK, identityService.findDependenciesByIds(identityList.identityIds))
             }
 
+            put("/dependency-cache") {
+                val identityId = UUID.fromString(call.parameters["identityId"])
+                identityService.handleIdentityDependencyCache(identityId)
+                call.respond(HttpStatusCode.OK)
+            }
+
             authenticate("basic-auth-admin") {
 
                 get {

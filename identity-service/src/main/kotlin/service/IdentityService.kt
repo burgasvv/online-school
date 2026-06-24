@@ -41,6 +41,19 @@ class IdentityService : CacheHandler<IdentityResponse>, CollectService<IdentityR
     override suspend fun handleCache(response: IdentityResponse) {
         val identityKey = RedisKeys.IDENTITY_KEY.format(response.id)
         if (redis.exists(identityKey)) redis.del(identityKey)
+        handleIdentityDependencyCache(response.id!!)
+    }
+
+    suspend fun handleIdentityDependencyCache(identityId: UUID) {
+        val identityResponse = findById(identityId)
+        val courses = identityResponse.courses
+        if (!courses.isNullOrEmpty()) {
+            courses.forEach { courseDependency ->
+                httpClient.put("http://localhost:9020/api/v1/courses/dependency-cache") {
+                    parameter("courseId", courseDependency.id)
+                }
+            }
+        }
     }
 
     override suspend fun findAll(): Set<IdentityResponse> = suspendTransaction(

@@ -105,6 +105,12 @@ class IdentityEntity(id: EntityID<UUID>) : UUIDEntity(id), Dao,
             setBody(documentRequest)
         }.body<Set<DocumentResponse>?>()
 
+        val courses = httpClient.get("http://localhost:9020/api/v1/courses/by-identity") {
+            parameter("identityId", id.value)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
+        }.body<Set<CourseDependency>>()
+
         return IdentityResponse(
             id = this.id.value,
             email = this.email,
@@ -113,7 +119,8 @@ class IdentityEntity(id: EntityID<UUID>) : UUIDEntity(id), Dao,
             patronymic = this.patronymic,
             about = this.about,
             image = image,
-            documents = documents
+            documents = documents,
+            courses = courses
         )
     }
 }

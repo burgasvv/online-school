@@ -92,5 +92,15 @@ data class IdentityResponse(
     val patronymic: String? = null,
     val about: String? = null,
     val image: ImageResponse? = null,
-    val documents: Set<DocumentResponse>? = null
+    val documents: Set<DocumentResponse>? = null,
+    val courses: Set<CourseDependency>? = null
 ) : Response
+
+@Serializable
+data class CourseDependency(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val date: String? = null
+) : Dependency

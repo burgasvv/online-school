@@ -15,4 +15,10 @@ interface CourseIdentityRepository : JpaRepository<CourseIdentity, CourseIdentit
         value = "select ci.identity_id from course_identity ci where ci.course_id = :courseId"
     )
     fun findIdentityIdsByCourseId(courseId: UUID): List<UUID>
+
+    @Query(
+        nativeQuery = true,
+        value = "select ci.course_id from course_identity ci where ci.identity_id = :identityId"
+    )
+    fun findCourseIdsByIdentityId(identityId: UUID): List<UUID>
 }

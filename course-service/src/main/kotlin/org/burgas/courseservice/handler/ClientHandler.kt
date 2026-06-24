@@ -34,4 +34,11 @@ class ClientHandler {
             .retrieve()
             .body<DocumentResponse>()
     }
+
+    fun handleIdentityCache(identityId: UUID) {
+        restClient.put()
+            .uri("http://localhost:9010/api/v1/identities/dependency-cache?identityId=$identityId")
+            .retrieve()
+            .toBodilessEntity()
+    }
 }

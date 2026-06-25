@@ -2,9 +2,11 @@ package org.burgas.courseservice.router
 
 import org.burgas.courseservice.dto.course.CourseIdentityRequest
 import org.burgas.courseservice.dto.course.CourseRequest
+import org.burgas.courseservice.dto.exception.ExceptionResponse
 import org.burgas.courseservice.service.CourseService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.router
@@ -53,6 +55,14 @@ class CourseRouter {
                 val cookie = it.cookies().getFirst("AUTH_TOKEN")
                 courseService.removeIdentity(courseIdentityRequest, cookie!!)
                 ServerResponse.ok().build()
+            }
+            onError<Throwable> { throwable, _ ->
+                val exceptionResponse = ExceptionResponse(
+                    status = HttpStatus.BAD_REQUEST.name,
+                    code = HttpStatus.BAD_REQUEST.ordinal,
+                    message = throwable.message
+                )
+                ServerResponse.status(HttpStatus.BAD_REQUEST).body(exceptionResponse)
             }
         }
     }

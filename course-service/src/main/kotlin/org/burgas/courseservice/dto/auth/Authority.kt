@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority
 
 enum class Authority : GrantedAuthority {
 
-    ADMIN, TEACHER, USER;
+    STUDENT, TEACHER, ADMIN;
 
     override fun getAuthority(): String {
         return this.name

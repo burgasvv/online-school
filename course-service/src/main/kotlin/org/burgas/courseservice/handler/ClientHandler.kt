@@ -1,8 +1,10 @@
 package org.burgas.courseservice.handler
 
+import jakarta.servlet.http.Cookie
 import org.burgas.courseservice.dto.document.DocumentResponse
 import org.burgas.courseservice.dto.identity.IdentityDependency
 import org.burgas.courseservice.dto.identity.IdentityList
+import org.burgas.courseservice.dto.identity.IdentityResponse
 import org.burgas.courseservice.dto.token.CsrfToken
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -46,12 +48,11 @@ class ClientHandler {
             .body<DocumentResponse>()
     }
 
-    fun handleIdentityCache(identityId: UUID) {
-        restClient.put()
-            .uri("http://localhost:9010/api/v1/identities/dependency-cache?identityId=$identityId")
-            .header(HttpHeaders.ORIGIN, "http://localhost:8000")
-            .header("X-CSRF-Token", getIdentityServiceCsrfToken().token.toString())
+    fun getIdentityResponseById(identityId: UUID, cookie: Cookie): IdentityResponse {
+        return restClient.get()
+            .uri("http://localhost:9010/api/v1/identities/no-cache/by-id?identityId=$identityId")
+            .cookie("AUTH_TOKEN", cookie.value)
             .retrieve()
-            .toBodilessEntity()
+            .requiredBody<IdentityResponse>()
     }
 }

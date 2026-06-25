@@ -34,7 +34,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:1.3.0")
     implementation("org.postgresql:postgresql:42.7.11")
     implementation("com.zaxxer:HikariCP:7.1.0")
-    implementation("redis.clients:jedis:7.5.2")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("io.ktor:ktor-server-auth:3.5.0")
 

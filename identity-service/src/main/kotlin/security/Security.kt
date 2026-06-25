@@ -113,6 +113,7 @@ fun Application.configureSecurity() {
     install(CSRF) {
         allowOrigin("http://localhost:8000")
         allowOrigin("http://localhost:8010")
+        allowOrigin("http://localhost:9010")
         checkHeader("X-CSRF-Token")
     }
 }

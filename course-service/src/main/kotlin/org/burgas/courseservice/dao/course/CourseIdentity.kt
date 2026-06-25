@@ -9,5 +9,9 @@ import jakarta.persistence.Table
 class CourseIdentity {
 
     @EmbeddedId
-    lateinit var courseIdentityId: CourseIdentityId
+    final var courseIdentityId: CourseIdentityId
+
+    constructor(courseIdentityId: CourseIdentityId) {
+        this.courseIdentityId = courseIdentityId
+    }
 }

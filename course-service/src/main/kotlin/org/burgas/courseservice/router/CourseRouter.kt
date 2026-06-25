@@ -1,5 +1,6 @@
 package org.burgas.courseservice.router
 
+import org.burgas.courseservice.dto.course.CourseIdentityRequest
 import org.burgas.courseservice.dto.course.CourseRequest
 import org.burgas.courseservice.service.CourseService
 import org.springframework.context.annotation.Bean
@@ -41,9 +42,16 @@ class CourseRouter {
                 courseService.delete(courseId)
                 ServerResponse.noContent().build()
             }
-            PUT("/dependency-cache") {
-                val courseId = UUID.fromString(it.param("courseId").orElseThrow())
-                courseService.handleIdentityDependencyCache(courseId)
+            PUT("/add-identity") {
+                val courseIdentityRequest = it.body<CourseIdentityRequest>()
+                val cookie = it.cookies().getFirst("AUTH_TOKEN")
+                courseService.addIdentity(courseIdentityRequest, cookie!!)
+                ServerResponse.ok().build()
+            }
+            PUT("/remove-identity") {
+                val courseIdentityRequest = it.body<CourseIdentityRequest>()
+                val cookie = it.cookies().getFirst("AUTH_TOKEN")
+                courseService.removeIdentity(courseIdentityRequest, cookie!!)
                 ServerResponse.ok().build()
             }
         }

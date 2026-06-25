@@ -109,7 +109,7 @@ class IdentityEntity(id: EntityID<UUID>) : UUIDEntity(id), Dao,
             parameter("identityId", id.value)
             header(HttpHeaders.Accept, ContentType.Application.Json)
             header(HttpHeaders.ContentType, ContentType.Application.Json)
-        }.body<Set<CourseDependency>>()
+        }.body<Set<CourseDependency>?>()
 
         return IdentityResponse(
             id = this.id.value,

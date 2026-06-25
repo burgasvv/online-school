@@ -8,8 +8,13 @@ import java.util.UUID
 class CourseIdentityId {
 
     @Column(name = "course_id", columnDefinition = "uuid")
-    lateinit var courseId: UUID
+    final var courseId: UUID
 
     @Column(name = "identity_id", columnDefinition = "uuid")
-    lateinit var identityId: UUID
+    final var identityId: UUID
+
+    constructor(courseId: UUID, identityId: UUID) {
+        this.courseId = courseId
+        this.identityId = identityId
+    }
 }

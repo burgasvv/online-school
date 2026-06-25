@@ -14,7 +14,6 @@ import org.jetbrains.exposed.v1.core.java.javaUUID
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
-import redis.clients.jedis.Jedis
 
 object DatabaseConnection {
 
@@ -33,11 +32,6 @@ object DatabaseConnection {
     private val dataSource = HikariDataSource(hikariConfig)
 
     val postgres = Database.connect(datasource = dataSource)
-
-    val jedis = Jedis(
-        config.property("ktor.redis.host").getString(),
-        config.property("ktor.redis.port").getString().toInt()
-    )
 }
 
 enum class Authority {

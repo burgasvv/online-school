@@ -17,6 +17,17 @@ Content-Type: application/json
 }
 
 ###
+POST /api/v1/courses/create
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Kotlin Course",
+    "description": "Описание курса Kotlin Course"
+}
+
+###
 PUT /api/v1/courses/update
 Host: localhost:8000
 Accept: application/json
@@ -24,10 +35,32 @@ Content-Type: application/json
 
 {
     "id": "36ee5204-1320-4005-acd1-df2b8e3bedb9",
-    "description": "Описание нового курса Java Course"
+    "description": "Описание курса Java Course"
 }
 
 ###
-GET /api/v1/courses/by-id?courseId=36ee5204-1320-4005-acd1-df2b8e3bedb9
+GET /api/v1/courses/by-id?courseId=4386ef4f-ccf2-4ebe-a7d2-b90925cea14b
 Host: localhost:8000
 Accept: application/json
+
+###
+PUT /api/v1/courses/add-identity
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "courseId": "4386ef4f-ccf2-4ebe-a7d2-b90925cea14b",
+    "identityId": "fe64fbfc-2038-440c-af12-1df81ab155e4"
+}
+
+###
+PUT /api/v1/courses/remove-identity
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "courseId": "4386ef4f-ccf2-4ebe-a7d2-b90925cea14b",
+    "identityId": "fe64fbfc-2038-440c-af12-1df81ab155e4"
+}

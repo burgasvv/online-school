@@ -6,9 +6,8 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
-import io.ktor.util.AttributeKey
+import io.ktor.server.sessions.*
+import io.ktor.util.*
 import org.burgas.dao.IdentityEntity
 import org.burgas.database.DatabaseConnection
 import org.burgas.dto.AuthToken
@@ -76,12 +75,6 @@ fun Application.configureIdentityRouter() {
                 call.respond(HttpStatusCode.OK, identityService.findDependenciesByIds(identityList.identityIds))
             }
 
-            put("/dependency-cache") {
-                val identityId = UUID.fromString(call.parameters["identityId"])
-                identityService.handleIdentityDependencyCache(identityId)
-                call.respond(HttpStatusCode.OK)
-            }
-
             authenticate("basic-auth-admin") {
 
                 get {
@@ -100,6 +93,11 @@ fun Application.configureIdentityRouter() {
                 get("/by-id") {
                     val identityId = UUID.fromString(call.parameters["identityId"])
                     call.respond(HttpStatusCode.OK, identityService.findById(identityId))
+                }
+
+                get("/no-cache/by-id") {
+                    val identityId = UUID.fromString(call.parameters["identityId"])
+                    call.respond(HttpStatusCode.OK, identityService.findByIdNoCache(identityId))
                 }
 
                 put("/update") {

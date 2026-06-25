@@ -28,16 +28,6 @@ spring:
         format_sql: true
         show_sql: true
         highlight_sql: true
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6020}
-      timeout: 2000ms
-      lettuce:
-        pool:
-          max-active: 16
-          max-idle: 8
-          min-idle: 2
 
 logging:
   level:

@@ -7,9 +7,6 @@ ktor:
     url: '$POSTGRES_URL:jdbc:postgresql://localhost:5010/identity-service-db'
     username: '$POSTGRES_USERNAME:postgres'
     password: '$POSTGRES_PASSWORD:postgres'
-  redis:
-    host: '$REDIS_HOST:localhost'
-    port: 6010
   application:
     modules:
       - org.burgas.serialization.SerializationKt.configureSerialization

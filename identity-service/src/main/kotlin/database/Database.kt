@@ -1,11 +1,8 @@
 
-@file:Suppress("UnusedReceiverParameter", "unused")
-
 package org.burgas.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.application.*
 import io.ktor.server.config.*
 import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.Table
@@ -63,7 +60,7 @@ object IdentityDocumentTable : Table("identity_document") {
         get() = PrimaryKey(arrayOf(identityId, documentId))
 }
 
-suspend fun Application.configureDatabase() {
+suspend fun configureDatabase() {
     suspendTransaction(db = DatabaseConnection.postgres) {
         SchemaUtils.create(IdentityTable, IdentityDocumentTable)
     }

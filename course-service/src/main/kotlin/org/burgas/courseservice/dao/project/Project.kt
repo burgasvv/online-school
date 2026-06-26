@@ -41,7 +41,7 @@ class Project : Dao {
     lateinit var link: String
 
     @Column(name = "task_id", columnDefinition = "uuid")
-    lateinit var taskId: UUID
+    var taskId: UUID? = null
 
     @Column(name = "date", columnDefinition = "timestamp")
     lateinit var date: LocalDateTime

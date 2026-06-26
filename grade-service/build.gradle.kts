@@ -1,0 +1,31 @@
+
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(ktorLibs.plugins.ktor)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+group = "org.burgas"
+version = "1.0.0-SNAPSHOT"
+
+application {
+    mainClass = "io.ktor.server.netty.EngineMain"
+}
+
+kotlin {
+    jvmToolchain(25)
+}
+dependencies {
+    implementation(ktorLibs.serialization.kotlinx.json)
+    implementation(ktorLibs.server.config.yaml)
+    implementation(ktorLibs.server.contentNegotiation)
+    implementation(ktorLibs.server.core)
+    implementation(ktorLibs.server.netty)
+    implementation(ktorLibs.server.statusPages)
+    implementation(libs.h2database.h2)
+    implementation(libs.logback.classic)
+    implementation(libs.postgresql)
+
+    testImplementation(kotlin("test"))
+    testImplementation(ktorLibs.server.testHost)
+}

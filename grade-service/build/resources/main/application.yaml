@@ -1,0 +1,7 @@
+
+ktor:
+  deployment:
+    port: 9030
+  application:
+    modules:
+      - org.burgas.MainKt.mainModules

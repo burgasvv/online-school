@@ -2,6 +2,13 @@
 ktor:
   deployment:
     port: 9030
+  postgres:
+    url: '$POSTGRES_URL:r2dbc:postgresql://localhost:5030/grade-service-db'
+    user: '$POSTGRES_USER:postgres'
+    password: '$POSTGRES:postgres'
+    pool:
+      initialSize: 5
+      maxSize: 20
   application:
     modules:
       - org.burgas.MainKt.mainModules

@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 
 object RestClient {
 
-    val httpClient = HttpClient(CIO) {
+    val httpClient = HttpClient {
         expectSuccess = true
         install(ContentNegotiation) {
             json(

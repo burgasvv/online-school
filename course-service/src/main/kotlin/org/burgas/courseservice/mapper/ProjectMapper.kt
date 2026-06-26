@@ -80,7 +80,7 @@ class ProjectMapper : Mapper<ProjectRequest, Project, ProjectDependency, Project
                 .map { getCourseMapper().toDependency(it) }.orElse(null),
             link = entity.link,
             date = entity.date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy, hh:mm")),
-            task = clientHandler.getDocumentById(entity.taskId)
+            task = clientHandler.getDocumentById(entity.taskId ?: UUID(0,0))
         )
     }
 }

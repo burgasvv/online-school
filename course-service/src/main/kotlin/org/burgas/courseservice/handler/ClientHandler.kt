@@ -7,12 +7,11 @@ import org.burgas.courseservice.dto.identity.IdentityDependency
 import org.burgas.courseservice.dto.identity.IdentityList
 import org.burgas.courseservice.dto.identity.IdentityResponse
 import org.burgas.courseservice.dto.token.CsrfToken
-import org.springframework.http.HttpEntity
+import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Component
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
 import org.springframework.web.client.requiredBody
@@ -62,16 +61,14 @@ class ClientHandler {
     }
 
     fun uploadDocument(part: Part): DocumentResponse {
-        val body: MultiValueMap<String, Any> = LinkedMultiValueMap()
-        val fileResource = ByteArrayInputStream(part.inputStream.readAllBytes())
-        val fileHeaders = HttpHeaders().apply {
-            contentType = MediaType.parseMediaType(part.contentType)
-        }
-        val filePart = HttpEntity(fileResource, fileHeaders)
-        body.add("document", filePart)
+        val multipartBodyBuilder = MultipartBodyBuilder()
+        multipartBodyBuilder
+            .part("document", InputStreamResource(ByteArrayInputStream(part.inputStream.readAllBytes())))
+            .filename(part.submittedFileName)
+            .contentType(MediaType.parseMediaType(part.contentType))
         return restClient.post()
             .uri("http://localhost:9000/api/v1/documents/upload")
-            .body(body)
+            .body(multipartBodyBuilder.build())
             .retrieve()
             .requiredBody<DocumentResponse>()
     }

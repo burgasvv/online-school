@@ -33,6 +33,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
+    implementation("org.reactivestreams:reactive-streams:1.0.4")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")

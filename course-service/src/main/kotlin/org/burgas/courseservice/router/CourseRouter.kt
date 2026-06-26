@@ -59,7 +59,7 @@ class CourseRouter {
             onError<Throwable> { throwable, _ ->
                 val exceptionResponse = ExceptionResponse(
                     status = HttpStatus.BAD_REQUEST.name,
-                    code = HttpStatus.BAD_REQUEST.ordinal,
+                    code = HttpStatus.BAD_REQUEST.value(),
                     message = throwable.message
                 )
                 ServerResponse.status(HttpStatus.BAD_REQUEST).body(exceptionResponse)

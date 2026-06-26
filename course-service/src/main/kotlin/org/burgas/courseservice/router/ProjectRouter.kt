@@ -1,12 +1,19 @@
 package org.burgas.courseservice.router
 
+import org.burgas.courseservice.dto.auth.AuthToken
+import org.burgas.courseservice.dto.exception.ExceptionResponse
 import org.burgas.courseservice.dto.project.ProjectRequest
+import org.burgas.courseservice.service.CourseService
 import org.burgas.courseservice.service.ProjectService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.web.servlet.function.ServerResponse
 import org.springframework.web.servlet.function.body
 import org.springframework.web.servlet.function.router
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.readValue
+import java.net.URLDecoder
 import java.util.UUID
 
 @Configuration
@@ -34,7 +41,7 @@ class ProjectRouter {
                 projectService.delete(projectId)
                 ServerResponse.ok().build()
             }
-            POST("/upload-image") {
+            POST("/upload-document") {
                 val projectId = UUID.fromString(it.param("projectId").orElseThrow())
                 val part = it.multipartData().getFirst("document")!!
                 projectService.uploadDocument(projectId, part)
@@ -44,6 +51,14 @@ class ProjectRouter {
                 val projectId = UUID.fromString(it.param("projectId").orElseThrow())
                 projectService.removeDocument(projectId)
                 ServerResponse.ok().build()
+            }
+            onError<Throwable> { throwable, _ ->
+                val exceptionResponse = ExceptionResponse(
+                    status = HttpStatus.BAD_REQUEST.name,
+                    code = HttpStatus.BAD_REQUEST.value(),
+                    message = throwable.message
+                )
+                ServerResponse.status(HttpStatus.BAD_REQUEST).body(exceptionResponse)
             }
         }
     }

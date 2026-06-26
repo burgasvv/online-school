@@ -64,3 +64,38 @@ Content-Type: application/json
     "courseId": "4386ef4f-ccf2-4ebe-a7d2-b90925cea14b",
     "identityId": "fe64fbfc-2038-440c-af12-1df81ab155e4"
 }
+
+
+
+### Project Requests
+
+
+
+###
+POST /api/v1/projects/create
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "First Java Project",
+    "description": "Описание проекта First Java Project",
+    "courseId": "4386ef4f-ccf2-4ebe-a7d2-b90925cea14b",
+    "link": "GitHub Link"
+}
+
+###
+PUT /api/v1/projects/update
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "id": "68134014-ae78-46d6-ab1b-193e7007dac3",
+    "link": "GitHub Link Test"
+}
+
+###
+GET /api/v1/projects/by-id?projectId=68134014-ae78-46d6-ab1b-193e7007dac3
+Host: localhost:8000
+Accept: application/json

@@ -60,6 +60,12 @@ class IdentityService : CollectService<IdentityResponse>,
         findEntity(identityId).toResponse()
     }
 
+    suspend fun findByIdDependency(identityId: UUID): IdentityDependency = suspendTransaction(
+        db = DatabaseConnection.postgres, readOnly = true
+    ) {
+        findEntity(identityId).toDependency()
+    }
+
     override suspend fun create(request: IdentityRequest): IdentityResponse = suspendTransaction(
         db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
     ) {

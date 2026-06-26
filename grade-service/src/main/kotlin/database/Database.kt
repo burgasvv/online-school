@@ -4,11 +4,15 @@ import io.ktor.server.config.*
 import io.r2dbc.spi.ConnectionFactories
 import io.r2dbc.spi.ConnectionFactoryOptions
 import io.r2dbc.spi.Option
-import org.jetbrains.exposed.v1.core.Table
-import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.greaterEq
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
+import org.burgas.client.RestClient
+import org.burgas.dto.*
+import org.jetbrains.exposed.v1.core.*
+import org.jetbrains.exposed.v1.core.dao.id.java.UUIDTable
 import org.jetbrains.exposed.v1.core.java.javaUUID
-import org.jetbrains.exposed.v1.core.lessEq
+import org.jetbrains.exposed.v1.core.statements.InsertStatement
+import org.jetbrains.exposed.v1.core.statements.UpdateStatement
 import org.jetbrains.exposed.v1.core.vendors.PostgreSQLDialect
 import org.jetbrains.exposed.v1.datetime.CurrentDateTime
 import org.jetbrains.exposed.v1.datetime.datetime
@@ -16,6 +20,8 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabaseConfig
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object DatabaseConnection {
 
@@ -34,7 +40,26 @@ object DatabaseConnection {
     )
 }
 
-object GradeTable : Table("grade") {
+interface Creator<in R : Request> {
+    fun InsertStatement<Number>.insert(request: R)
+}
+
+interface Updater<in R : Request> {
+    fun UpdateStatement.update(request: R)
+}
+
+interface DependencyMapper<out D : Dependency> {
+    suspend fun ResultRow.toDependency(): D
+}
+
+interface ResponseMapper<out R : Response> {
+    suspend fun ResultRow.toResponse(): R
+}
+
+object GradeTable : UUIDTable("grade"),
+    Creator<GradeRequest>, Updater<GradeRequest>,
+    DependencyMapper<GradeDependency>, ResponseMapper<GradeResponse> {
+
     val projectId = javaUUID("project_id")
     val studentId = javaUUID("student_id")
     val teacherId = javaUUID("teacher_id")
@@ -42,12 +67,49 @@ object GradeTable : Table("grade") {
     val mark = integer("mark").default(0).check { (it greaterEq 0) and (it lessEq 5) }
     val date = datetime("date").defaultExpression(CurrentDateTime)
 
-    override val primaryKey: PrimaryKey
-        get() = PrimaryKey(arrayOf(projectId, studentId, teacherId))
-
     init {
         index(false, mark)
         index(false, date)
+    }
+
+    override fun InsertStatement<Number>.insert(request: GradeRequest) {
+        request.projectId!!.let { this[projectId] = it }
+        request.studentId!!.let { this[studentId] = it }
+        request.teacherId!!.let { this[teacherId] = it }
+        request.description.let { this[description] = it }
+        request.mark!!.let { this[mark] = it }
+        this[date] = LocalDateTime.now().toKotlinLocalDateTime()
+    }
+
+    override fun UpdateStatement.update(request: GradeRequest) {
+        request.projectId?.let { this[projectId] = it }
+        request.teacherId?.let { this[teacherId] = it }
+        request.studentId?.let { this[studentId] = it }
+        request.description.let { this[description] = it }
+        request.mark?.let { this[mark] = it }
+    }
+
+    override suspend fun ResultRow.toDependency(): GradeDependency {
+        return GradeDependency(
+            id = this[id].value,
+            teacher = RestClient.findTeacherDependency(this[teacherId]),
+            student = RestClient.findStudentDependency(this[studentId]),
+            description = this[description],
+            mark = this[mark],
+            date = this[date].toJavaLocalDateTime().format(DateTimeFormatter.ofPattern("hh MMMM yyyy, hh:mm"))
+        )
+    }
+
+    override suspend fun ResultRow.toResponse(): GradeResponse {
+        return GradeResponse(
+            id = this[id].value,
+            project = RestClient.findProjectDependency(this[projectId]),
+            teacher = RestClient.findTeacherDependency(this[teacherId]),
+            student = RestClient.findStudentDependency(this[studentId]),
+            description = this[description],
+            mark = this[mark],
+            date = this[date].toJavaLocalDateTime().format(DateTimeFormatter.ofPattern("hh MMMM yyyy, hh:mm"))
+        )
     }
 }
 

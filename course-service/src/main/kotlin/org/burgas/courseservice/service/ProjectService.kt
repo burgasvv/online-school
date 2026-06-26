@@ -2,6 +2,7 @@ package org.burgas.courseservice.service
 
 import jakarta.servlet.http.Part
 import org.burgas.courseservice.dao.project.Project
+import org.burgas.courseservice.dto.project.ProjectDependency
 import org.burgas.courseservice.dto.project.ProjectRequest
 import org.burgas.courseservice.dto.project.ProjectResponse
 import org.burgas.courseservice.handler.ClientHandler
@@ -36,6 +37,10 @@ class ProjectService : ReadService<UUID, Project, ProjectResponse>, CreateServic
 
     override fun findById(id: UUID): ProjectResponse {
         return projectMapper.toResponse(findEntity(id))
+    }
+
+    fun findDependencyById(id: UUID): ProjectDependency {
+        return projectMapper.toDependency(findEntity(id))
     }
 
     @Transactional(

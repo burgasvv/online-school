@@ -24,6 +24,7 @@ dependencies {
     implementation(ktorLibs.server.netty)
     implementation(ktorLibs.client.core)
     implementation(libs.logback.classic)
+    implementation(ktorLibs.client.cio)
     implementation("io.ktor:ktor-server-status-pages:3.5.0")
     implementation("io.ktor:ktor-server-sessions:3.5.0")
     implementation("io.ktor:ktor-server-cors:3.5.0")

@@ -1,15 +1,15 @@
 package org.burgas.client
 
-import io.ktor.client.HttpClient
+import io.ktor.client.*
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.cookies.HttpCookies
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.cookies.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 object RestClient {
 
-    val httpClient = HttpClient {
+    val httpClient = HttpClient(CIO) {
         expectSuccess = true
         install(ContentNegotiation) {
             json(

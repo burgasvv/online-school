@@ -39,6 +39,7 @@ class SecurityConfig {
                 authorize("/api/v1/courses/remove-identity", authenticated)
 
                 authorize("/api/v1/projects/by-id", authenticated)
+                authorize("/api/v1/projects/dependency/by-id", permitAll)
                 authorize("/api/v1/projects/create", hasAnyAuthority("ADMIN", "TEACHER"))
                 authorize("/api/v1/projects/update", hasAnyAuthority("ADMIN", "TEACHER"))
                 authorize("/api/v1/projects/delete", hasAnyAuthority("ADMIN", "TEACHER"))

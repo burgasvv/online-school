@@ -2,15 +2,10 @@ package org.burgas.security
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.UserIdPrincipal
-import io.ktor.server.auth.authentication
-import io.ktor.server.auth.basic
-import io.ktor.server.auth.form
-import io.ktor.server.auth.session
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
-import io.ktor.server.sessions.Sessions
-import io.ktor.server.sessions.cookie
+import io.ktor.server.sessions.*
 import org.burgas.dto.AuthToken
 import org.burgas.dto.ExceptionResponse
 
@@ -18,7 +13,7 @@ fun Application.configureSecurity() {
 
     authentication {
         session<AuthToken>("basic-auth-session") {
-            validate { it }
+            validate { session -> session }
             challenge {
                 val exceptionResponse = ExceptionResponse(
                     status = HttpStatusCode.Unauthorized.description,
@@ -30,16 +25,16 @@ fun Application.configureSecurity() {
         }
     }
 
-    install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            val exceptionResponse = ExceptionResponse(
-                status = HttpStatusCode.BadRequest.description,
-                code = HttpStatusCode.BadRequest.value,
-                message = cause.message
-            )
-            call.respond(HttpStatusCode.BadRequest, exceptionResponse)
-        }
-    }
+//    install(StatusPages) {
+//        exception<Throwable> { call, cause ->
+//            val exceptionResponse = ExceptionResponse(
+//                status = HttpStatusCode.BadRequest.description,
+//                code = HttpStatusCode.BadRequest.value,
+//                message = cause.message
+//            )
+//            call.respond(HttpStatusCode.BadRequest, exceptionResponse)
+//        }
+//    }
 
     install(Sessions) {
         cookie<AuthToken>("AUTH_TOKEN")

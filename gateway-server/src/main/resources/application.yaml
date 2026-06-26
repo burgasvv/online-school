@@ -23,3 +23,8 @@ spring:
               uri: ${COURSE_SERVICE_URI:http://localhost:9020}
               predicates:
                 - Path=/api/v1/courses/**,/api/v1/projects/**
+
+            - id: grade-service
+              uri: ${GRADE_SERVICE_URI:http://localhost:9030}
+              predicates:
+                - Path=/api/v1/grades/**

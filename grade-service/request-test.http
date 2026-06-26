@@ -1,0 +1,25 @@
+
+
+
+### Grade Requests
+
+
+
+###
+POST /api/v1/grades/create
+Host: localhost:8000
+Accept: application/json
+Content-Type: application/json
+
+{
+    "projectId": "68134014-ae78-46d6-ab1b-193e7007dac3",
+    "studentId": "fe64fbfc-2038-440c-af12-1df81ab155e4",
+    "teacherId": "fe64fbfc-2038-440c-af12-1df81ab155e4",
+    "description": "Рецензия на выполненное задание и оценивание",
+    "mark": 5
+}
+
+###
+GET /api/v1/grades/by-id?gradeId=e4390903-a0c8-448b-bd31-ddffda5bd37b
+Host: localhost:8000
+Accept: application/json

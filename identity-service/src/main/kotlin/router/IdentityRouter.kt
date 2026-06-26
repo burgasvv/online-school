@@ -75,6 +75,11 @@ fun Application.configureIdentityRouter() {
                 call.respond(HttpStatusCode.OK, identityService.findDependenciesByIds(identityList.identityIds))
             }
 
+            get("/dependency/by-id") {
+                val identityId = UUID.fromString(call.parameters["identityId"])
+                call.respond(HttpStatusCode.OK, identityService.findByIdDependency(identityId))
+            }
+
             authenticate("basic-auth-admin") {
 
                 get {

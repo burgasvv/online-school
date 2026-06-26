@@ -37,6 +37,13 @@ class SecurityConfig {
                 authorize("/api/v1/courses/delete", hasAnyAuthority("ADMIN", "TEACHER"))
                 authorize("/api/v1/courses/add-identity", authenticated)
                 authorize("/api/v1/courses/remove-identity", authenticated)
+
+                authorize("/api/v1/projects/by-id", authenticated)
+                authorize("/api/v1/projects/create", hasAnyAuthority("ADMIN", "TEACHER"))
+                authorize("/api/v1/projects/update", hasAnyAuthority("ADMIN", "TEACHER"))
+                authorize("/api/v1/projects/delete", hasAnyAuthority("ADMIN", "TEACHER"))
+                authorize("/api/v1/projects/upload-document", hasAnyAuthority("ADMIN", "TEACHER"))
+                authorize("/api/v1/projects/remove-document", hasAnyAuthority("ADMIN", "TEACHER"))
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter> { request, response, chain ->
                 request as HttpServletRequest
